@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Virtual environment
+.venv/
+
+# VS Code (local preferences, not shared)
+.vscode/
+
+# Data, checkpoints, logs — too heavy for Git, re-downloadable or re-trainable
+data/
+checkpoints/
+runs/
+logs/
+
+# OS junk
+Thumbs.db
+.DS_Store
