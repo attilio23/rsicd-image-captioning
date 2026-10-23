@@ -58,14 +58,14 @@ Il dominio del telerilevamento presenta difficoltà specifiche rispetto alle fot
 
 Il lavoro è organizzato nelle seguenti fasi, che corrispondono alle sezioni del notebook `image_captioning_rsicd.ipynb`:
 
-1. **Acquisizione** del dataset ed esportazione su disco in formato semplice (immagini JPEG + caption in JSON).
-2. **Analisi esplorativa** delle caption e scelta della lunghezza massima delle sequenze.
-3. **Tokenizzazione e vocabolario**, costruito esclusivamente sul training set.
-4. **`Dataset` e `DataLoader`** PyTorch con padding dinamico delle sequenze.
-5-6. **Baseline *Show and Tell***: training con teacher forcing ed early stopping sulla validation loss.
-7. **Valutazione della baseline**: generazione autoregressiva greedy e calcolo delle metriche sul validation set.
-8. **Modello con regolarizzazione e fine-tuning**: training da zero con tutte le tecniche migliorative, selezione del checkpoint sul validation set, decodifica beam search.
-9. **Valutazione finale** di baseline e modello finale sul test set.
+**1.**&emsp;**Acquisizione** del dataset ed esportazione su disco in formato semplice (immagini JPEG + caption in JSON).<br>
+**2.**&emsp;**Analisi esplorativa** delle caption e scelta della lunghezza massima delle sequenze.<br>
+**3.**&emsp;**Tokenizzazione e vocabolario**, costruito esclusivamente sul training set.<br>
+**4.**&emsp;**`Dataset` e `DataLoader`** PyTorch con padding dinamico delle sequenze.<br>
+**5-6.**&emsp;**Baseline *Show and Tell***: training con teacher forcing ed early stopping sulla validation loss.<br>
+**7.**&emsp;**Valutazione della baseline**: generazione autoregressiva greedy e calcolo delle metriche sul validation set.<br>
+**8.**&emsp;**Modello con regolarizzazione e fine-tuning**: training da zero con tutte le tecniche migliorative, selezione del checkpoint sul validation set, decodifica beam search.<br>
+**9.**&emsp;**Valutazione finale** di baseline e modello finale sul test set.
 
 ---
 
