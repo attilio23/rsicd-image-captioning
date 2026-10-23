@@ -1,10 +1,10 @@
 # Image Captioning su immagini satellitari (dataset RSICD)
 
-**Università degli Studi di Catania** — Corso di Laurea Magistrale in Informatica
-**Corso:** Deep Learning Core Models and Methods
-**Docenti** Giovanni Maria Farinella e Francesco Ragusa
-**Anno Accademico:** 2025/2026
-**Studente:** Attilio Di Natale
+**Università degli Studi di Catania** — Corso di Laurea Magistrale in Informatica<br>
+**Corso:** Deep Learning Core Models and Methods<br>
+**Docenti** Giovanni Maria Farinella e Francesco Ragusa<br>
+**Anno Accademico:** 2025/2026<br>
+**Studente:** Attilio Di Natale<br>
 **Matricola:** 1000004030
 
 ---
@@ -42,10 +42,8 @@ Il dominio del telerilevamento presenta difficoltà specifiche rispetto alle fot
 - **domain gap**: i backbone convoluzionali disponibili sono pre-addestrati su ImageNet, cioè su fotografie scattate da terra, non su immagini aeree.
 
 <div align="center">
-
-![Città di Firenze](figures/firenze.jpg){ width=800px }
-*Vista aerea del centro storico di Firenze.*
-
+  <img src="figures/firenze.jpg" alt="Città di Firenze" width="800"/>
+  <p><em>Vista aerea del centro storico di Firenze.</em></p>
 </div>
 
 ### Obiettivi del progetto
@@ -64,10 +62,10 @@ Il lavoro è organizzato nelle seguenti fasi, che corrispondono alle sezioni del
 2. **Analisi esplorativa** delle caption e scelta della lunghezza massima delle sequenze.
 3. **Tokenizzazione e vocabolario**, costruito esclusivamente sul training set.
 4. **`Dataset` e `DataLoader`** PyTorch con padding dinamico delle sequenze.
-5. **Baseline *Show and Tell***: training con teacher forcing ed early stopping sulla validation loss.
-6. **Valutazione della baseline**: generazione autoregressiva greedy e calcolo delle metriche sul validation set.
-7. **Modello con regolarizzazione e fine-tuning**: training da zero con tutte le tecniche migliorative, selezione del checkpoint sul validation set, decodifica beam search.
-8. **Valutazione finale** di baseline e modello finale sul test set.
+5-6. **Baseline *Show and Tell***: training con teacher forcing ed early stopping sulla validation loss.
+7. **Valutazione della baseline**: generazione autoregressiva greedy e calcolo delle metriche sul validation set.
+8. **Modello con regolarizzazione e fine-tuning**: training da zero con tutte le tecniche migliorative, selezione del checkpoint sul validation set, decodifica beam search.
+9. **Valutazione finale** di baseline e modello finale sul test set.
 
 ---
 
@@ -94,10 +92,8 @@ Dall'ispezione dei dati emergono due caratteristiche rilevanti per l'addestramen
 - **eterogeneità delle reference**: per altre immagini le caption differiscono molto per lunghezza e contenuto (es. `airport_61.jpg`, dove si passa da una descrizione dettagliata di piste e rettangoli di terreno a *"a brown ground divided by the grey runway"*).
 
 <div align="center">
-
-![Esempi dal dataset RSICD con le relative caption di riferimento](figures/rsicd_examples.png){ width=1500px }
-*Esempi rappresentativi del dataset RSICD.*
-
+  <img src="figures/rsicd_examples.png" alt="Esempi dal dataset RSICD" width="1500"/>
+  <p><em>Esempi rappresentativi del dataset RSICD.</em></p>
 </div>
 
 ### Acquisizione
@@ -318,9 +314,7 @@ Al termine viene ricaricato il checkpoint con la validation loss minima, in modo
 **Numero massimo di epoche (15).** Il cap di 15 epoche è stato scelto come **limite superiore difensivo**, non come target da raggiungere. L'idea è stabilire un budget computazionale ragionevole (circa 20.000 iterazioni di SGD su un dataset di 43.670 campioni con batch size 32) sufficiente a vedere la curva di validation raggiungere un plateau e, se mai, iniziare a risalire — segno che non c'è più niente da imparare che si traduca in migliore generalizzazione. La decisione effettiva di quando fermarsi è delegata al meccanismo di **early stopping**, non al cap: nella pratica il training si è fermato all'epoca 11, confermando che 15 era un valore sufficientemente ampio. L' early stopping è il meccanismo che interrompe automaticamente il training quando la validation loss smette di migliorare, prevenendo overfitting e sprechi di tempo di calcolo. Il parametro `PATIENCE = 3` definisce la **tolleranza**: il training continua finché la validation loss migliora, e viene interrotto solo dopo **3 epoche consecutive** senza miglioramento rispetto al minimo registrato. La scelta di 3 è un compromesso ragionato tra due estremi: una patience troppo bassa (1 o 2) rischierebbe di interrompere il training per oscillazioni casuali della validation loss, perdendo potenziali miglioramenti successivi; una patience troppo alta (5 o più) sprecherebbe risorse continuando a girare quando il modello sta già overfittando senza speranza di recupero.  Il checkpoint migliore è quello dell'**epoca 8** con validation loss **1.7235**.
 
 <div align="center">
-
-![Curve di loss del training della baseline](figures/baseline_loss_curves.png){ width=900px }
-
+  <img src="figures/baseline_loss_curves.png" alt="Curve di loss del training della baseline" width="900"/>
 </div>
 
 Il grafico mostra l'andamento della cross-entropy per token su training e validation set durante il training della baseline. La **training loss** (curva blu) scende con continuità da 2.5815 all'epoca 1 fino a 0.9493 all'epoca 11, con pendenza decrescente che indica una convergenza regolare dell'ottimizzatore. La **validation loss** (curva arancione) segue invece un pattern completamente diverso: scende rapidamente nelle prime quattro epoche (da 2.07 a 1.75), rallenta tra la quarta e la quinta, raggiunge il **minimo 1.7235 all'epoca 8** (evidenziata dalla linea tratteggiata grigia) e dopo quel punto inizia a **risalire leggermente** stabilizzandosi intorno a 1.75. Il **divario crescente tra le due curve** — da 0.21 all'epoca 1 a circa 0.80 all'epoca 11 — è la firma visiva classica dell'**overfitting**: il modello continua a migliorare le sue predizioni sui dati di training senza che questo si traduca in migliori capacità di generalizzazione sul validation set.
@@ -373,9 +367,7 @@ La prossima sezione descrive il **modello finale**, costruito per affrontare ent
 Oltre ai valori numerici, è utile osservare direttamente alcune caption generate dalla baseline per capire cosa il modello sa fare e dove invece sbaglia. La figura seguente mostra 4 immagini del validation set scelte in modo casuale, affiancate alla caption generata dalla baseline e alle 5 reference umane.
 
 <div align="center">
-
-![Esempi di caption generate dalla baseline Show and Tell su 4 immagini del validation set (greedy decoding), affiancate alle 5 reference annotate manualmente](figures/baseline_qualitative_examples.png){ width=900px }
-
+  <img src="figures/baseline_qualitative_examples.png" alt="Esempi di caption generate dalla baseline Show and Tell su 4 immagini del validation set (greedy decoding), affiancate alle 5 reference annotate manualmente" width="900"/>
 </div>
 
 Il modello riconosce correttamente la categoria della scena in tutti i casi e produce frasi grammaticalmente ben formate. Per `pond_77.jpg` e `denseresidential_95.jpg` le caption generate ricalcano quasi letteralmente le reference e usano con proprietà il vocabolario di dominio (*"irregular pond"*, *"dense residential area"*).
@@ -408,9 +400,7 @@ La compresenza di due componenti con stato di partenza molto diverso — il deco
 Il training segue la stessa struttura descritta nella sezione 6. Gli unici parametri rivisti rispetto alla baseline sono il cap massimo di epoche, portato a **25** per dare margine alla convergenza più lenta indotta da augmentation e regolarizzazione, e la patience dell'early stopping, portata a **4** per tollerare le oscillazioni leggermente più marcate della validation loss. Il modello non viene inizializzato dai pesi della baseline ma addestrato indipendentemente, con decoder a pesi casuali ed encoder pre-addestrato su ImageNet. L'early stopping è scattato all'epoca 15 e il miglior checkpoint corrisponde all'**epoca 11**, con validation loss pari a **2.5026**.
 
 <div align="center">
-
-![Curve di loss del training del modello completo: train loss (blu) e validation loss (arancione) convergono rapidamente dalle epoche 1-4 e si stabilizzano su un plateau a partire dall'epoca 5; il best epoch è l'11 (val loss = 2.5026) e l'early stopping scatta all'epoca 15](figures/full_loss_curves.png){ width=700px }
-
+  <img src="figures/full_loss_curves.png" alt="Curve di loss del training del modello completo: train loss (blu) e validation loss (arancione), con plateau a partire dall'epoca 5; il best epoch è l'11 (val loss = 2.5026) e l'early stopping scatta all'epoca 15" width="700"/>
 </div>
 
 Il confronto tra le curve del modello completo e quelle della baseline (sezione 6) mostra una differenza qualitativa importante. Nella baseline, dopo l'epoca 8, la training loss continuava a scendere mentre la validation loss risaliva, con un gap finale di circa 0.80: il modello stava memorizzando il training set a scapito della generalizzazione. Nel modello completo, invece, le due curve procedono in parallelo per tutte le 15 epoche: il gap finale è di circa 0.48, nettamente inferiore, e la validation loss non mostra la risalita caratteristica dell'overfitting ma si limita a stabilizzarsi su un plateau. Questo è il segno visivo che le tecniche di regolarizzazione introdotte (dropout, data augmentation, label smoothing, weight decay) stanno effettivamente svolgendo il loro compito, impedendo al modello di adattarsi eccessivamente ai pattern specifici del training set.
